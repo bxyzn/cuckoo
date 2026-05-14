@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cuckoo</title>
+    <style>
+        body {
+            background-color: #000;
+            color: #fff;
+            font-family: sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+        }
+        .container {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            max-width: 300px;
+        }
+        button {
+            background: transparent;
+            color: #ff0000;
+            border: 2px solid #ff0000;
+            padding: 15px;
+            font-size: 1rem;
+            cursor: pointer;
+            text-transform: uppercase;
+            font-weight: bold;
+            transition: 0.3s;
+        }
+        button:hover {
+            background: #ff0000;
+            color: #000;
+        }
+        #response {
+            margin-bottom: 20px;
+            height: 1.5rem;
+            color: #ff0000;
+        }
+        .full-width {
+            grid-column: span 2;
+        }
+    </style>
+</head>
+<body>
+
+    <h2 id="response"></h2>
+
+    <div class="container">
+        <button onclick="sendcmd('vu')">V+</button>
+        <button onclick="sendcmd('vd')">V-</button>
+        <button onclick="sendcmd('pv')">Prev</button>
+        <button onclick="sendcmd('nt')">Next</button>
+        <button class="full-width" onclick="sendcmd('pp')">Play/Pause</button>
+        <button class="full-width" onclick="sendcmd('v0')">Mute</button>
+    </div>
+
+    <script>
+        async function sendcmd(cmd) {
+            try {
+                const res = await fetch('/cmd', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({cmd: cmd})
+                });
+
+                const data = await res.json();
+                document.getElementById('response').innerHTML = data.response;
+            } catch (error) {
+                console.error(error);
+                document.getElementById('response').innerHTML = 'Error';
+            }
+        }
+    </script>
+</body>
+</html>
